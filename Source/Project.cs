@@ -43,7 +43,7 @@ namespace BuildSpyNark
     public string Name { get; private set; } = "";
 
     // Projects build stats.
-    public BuildStatsCollection Stats { get; private set; } = new BuildStatsCollection();
+    private  BuildStatsCollection Stats { get; set; } = new BuildStatsCollection();
 
     //-------------------------------------------------------------------------
 
