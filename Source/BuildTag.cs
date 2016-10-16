@@ -4,7 +4,7 @@ namespace BuildSpyNark
 {
   class BuildTag
   {
-    //-------------------------------------------------------------------------
+    //== BuildTag factory =====================================================
 
     // Static collection of all tags by text.
     private static Dictionary< string, BuildTag > Tags { get; set; } =
@@ -14,11 +14,17 @@ namespace BuildSpyNark
 
     // Returns a tag if it already exists, otherwise creates it first.
 
-    public static BuildTag GetTag( string text )
+    public static BuildTag GetTag(
+      string text,
+      bool createTagIfNotFound = true )
     {
       if( Tags.ContainsKey( text ) )
       {
         return Tags[ text ];
+      }
+      else if( createTagIfNotFound == false )
+      {
+        return null;
       }
 
       BuildTag tag = new BuildTag( text );
@@ -36,7 +42,7 @@ namespace BuildSpyNark
       Tags.Clear();
     }
 
-    //=========================================================================
+    //== BuildTag intance =====================================================
 
     public string Text { get; private set; }
 
