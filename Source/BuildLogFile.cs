@@ -8,9 +8,22 @@ namespace BuildSpyNark
   {
     //-------------------------------------------------------------------------
 
+    public struct LogEntry
+    {
+      public enum LogEntryType
+      {
+        BUILD_STARTED,
+        BUILD_ENDED
+      }
+
+      public DateTime Timestamp { get; set; }
+      public LogEntryType EntryType { get; set; }
+    }
+
     private const char c_tagSeparator = '#';
 
     private List<string> Tags { get; set; } = null;
+    private List<LogEntry> Entries { get; set; } = new List<LogEntry>();
 
     //-------------------------------------------------------------------------
 
@@ -30,9 +43,11 @@ namespace BuildSpyNark
 
       foreach( string line in lines )
       {
+        LogEntry entry = new LogEntry();
+
         string[] fields = line.Split( '|' );
 
-        DateTime timestamp =
+        entry.Timestamp =
           new DateTime(
             int.Parse( fields[ 0 ].Substring( 0, 4 ) ),    // yyyy
             int.Parse( fields[ 0 ].Substring( 4, 2 ) ),    // MM
@@ -40,7 +55,23 @@ namespace BuildSpyNark
             int.Parse( fields[ 0 ].Substring( 8, 2 ) ),    // HH
             int.Parse( fields[ 0 ].Substring( 10, 2 ) ),   // MM
             int.Parse( fields[ 0 ].Substring( 12, 2 ) ) ); // SS
+
+        if( fields[ 1 ] == "build_start" )
+        {
+          entry.EntryType = LogEntry.LogEntryType.BUILD_STARTED;
+        }
+        else if( fields[ 1 ] == "build_end" )
+        {
+          entry.EntryType = LogEntry.LogEntryType.BUILD_ENDED;
+        }
       }
+    }
+
+    //-------------------------------------------------------------------------
+
+    public IReadOnlyCollection<LogEntry> GetEntries()
+    {
+      return Entries;
     }
 
     //-------------------------------------------------------------------------
