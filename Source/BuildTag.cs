@@ -7,8 +7,8 @@ namespace BuildSpyNark
     //== BuildTag factory =====================================================
 
     // Static collection of all tags by text.
-    private static Dictionary< string, BuildTag > Tags { get; set; } =
-      new Dictionary< string, BuildTag >();
+    private static Dictionary<string, BuildTag> Tags { get; set; } =
+      new Dictionary<string, BuildTag>();
 
     //-------------------------------------------------------------------------
 

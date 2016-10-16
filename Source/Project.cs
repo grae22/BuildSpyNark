@@ -8,8 +8,8 @@ namespace BuildSpyNark
     //== Project factory ======================================================
 
     // Static collection of all projects by name.
-    private static Dictionary< string, Project > Projects { get; set; } =
-      new Dictionary< string, Project >();
+    private static Dictionary<string, Project> Projects { get; set; } =
+      new Dictionary<string, Project>();
 
     //-------------------------------------------------------------------------
 
@@ -43,8 +43,8 @@ namespace BuildSpyNark
     public string Name { get; private set; } = "";
 
     // Project's build stats by tag.
-    private Dictionary< BuildTag, BuildStatsCollection > Stats { get; set; } =
-      new Dictionary< BuildTag, BuildStatsCollection >();
+    private Dictionary<BuildTag, BuildStatsCollection> Stats { get; set; } =
+      new Dictionary<BuildTag, BuildStatsCollection>();
 
     // 'All' build tag.
     private BuildTag AllBuilds = BuildTag.GetTag( "All" );

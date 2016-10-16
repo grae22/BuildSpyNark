@@ -11,7 +11,7 @@ namespace BuildSpyNark
     //-------------------------------------------------------------------------
 
     // Collection of build stats.
-    private List< BuildStats > Stats { get; set; } = new List< BuildStats >();
+    private List<BuildStats> Stats { get; set; } = new List<BuildStats>();
 
     // Number of builds.
     private uint TotalBuildsCount { get; set; }
@@ -53,7 +53,7 @@ namespace BuildSpyNark
 
     //-------------------------------------------------------------------------
 
-    public override IReadOnlyCollection< BuildStats > GetBuildStats()
+    public override IReadOnlyCollection<BuildStats> GetBuildStats()
     {
       return Stats.AsReadOnly();
     }

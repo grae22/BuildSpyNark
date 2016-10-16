@@ -17,7 +17,7 @@ namespace BuildSpyNark
     public DateTime? End { get; private set; } = null;
 
     // Tags relating to this build.
-    private List< BuildTag > Tags { get; set; } = new List< BuildTag >();
+    private List<BuildTag> Tags { get; set; } = new List<BuildTag>();
 
     //-------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ namespace BuildSpyNark
 
     //-------------------------------------------------------------------------
 
-    public ReadOnlyCollection< BuildTag > GetTags()
+    public ReadOnlyCollection<BuildTag> GetTags()
     {
       return Tags.AsReadOnly();
     }
