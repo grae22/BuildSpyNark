@@ -65,5 +65,18 @@ namespace BuildSpyNark_Test
     }
 
     //-------------------------------------------------------------------------
+
+    [TestMethod]
+    [ExpectedException( typeof( Exception ) )]
+    public void AllTagIsReserved()
+    {
+      DateTime start = new DateTime( 0 );
+      DateTime? end = null;
+      string[] tags = { "All" };
+
+      TestObject.AddBuild( start, end, tags );
+    }
+
+    //-------------------------------------------------------------------------
   }
 }
