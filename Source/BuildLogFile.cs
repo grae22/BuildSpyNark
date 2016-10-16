@@ -4,7 +4,7 @@ using System.IO;
 
 namespace BuildSpyNark
 {
-  class BuildLogFile
+  internal class BuildLogFile
   {
     //-------------------------------------------------------------------------
 
@@ -47,23 +47,32 @@ namespace BuildSpyNark
 
         string[] fields = line.Split( '|' );
 
-        entry.Timestamp =
-          new DateTime(
-            int.Parse( fields[ 0 ].Substring( 0, 4 ) ),    // yyyy
-            int.Parse( fields[ 0 ].Substring( 4, 2 ) ),    // MM
-            int.Parse( fields[ 0 ].Substring( 6, 2 ) ),    // dd
-            int.Parse( fields[ 0 ].Substring( 8, 2 ) ),    // HH
-            int.Parse( fields[ 0 ].Substring( 10, 2 ) ),   // MM
-            int.Parse( fields[ 0 ].Substring( 12, 2 ) ) ); // SS
+        try
+        {
+          entry.Timestamp =
+            new DateTime(
+              int.Parse( fields[ 0 ].Substring( 0, 4 ) ),    // yyyy
+              int.Parse( fields[ 0 ].Substring( 5, 2 ) ),    // MM
+              int.Parse( fields[ 0 ].Substring( 8, 2 ) ),    // dd
+              int.Parse( fields[ 0 ].Substring( 11, 2 ) ),   // HH
+              int.Parse( fields[ 0 ].Substring( 14, 2 ) ),   // MM
+              int.Parse( fields[ 0 ].Substring( 17, 2 ) ) ); // SS
 
-        if( fields[ 1 ] == "build_start" )
-        {
-          entry.EntryType = LogEntry.LogEntryType.BUILD_STARTED;
+          if( fields[ 1 ] == "build_start" )
+          {
+            entry.EntryType = LogEntry.LogEntryType.BUILD_STARTED;
+          }
+          else if( fields[ 1 ] == "build_end" )
+          {
+            entry.EntryType = LogEntry.LogEntryType.BUILD_ENDED;
+          }
         }
-        else if( fields[ 1 ] == "build_end" )
+        catch( Exception )
         {
-          entry.EntryType = LogEntry.LogEntryType.BUILD_ENDED;
+          // TODO
         }
+
+        Entries.Add( entry );
       }
     }
 
