@@ -12,6 +12,8 @@ namespace BuildSpyNark
 
     //-------------------------------------------------------------------------
 
+    // Returns a tag if it already exists, otherwise creates it first.
+
     public static BuildTag GetTag( string text )
     {
       if( Tags.ContainsKey( text ) )
@@ -23,6 +25,15 @@ namespace BuildSpyNark
       Tags.Add( text, tag );
 
       return tag;
+    }
+
+    //-------------------------------------------------------------------------
+
+    // Clears the static tag collection.
+
+    public static void Reset()
+    {
+      Tags.Clear();
     }
 
     //=========================================================================

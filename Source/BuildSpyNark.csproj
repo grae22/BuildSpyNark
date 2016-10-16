@@ -46,6 +46,7 @@
     <Compile Include="BuildStats.cs" />
     <Compile Include="BuildStatsCollection.cs" />
     <Compile Include="BuildTag.cs" />
+    <Compile Include="IBuildStatsProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

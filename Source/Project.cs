@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BuildSpyNark
 {
-  class Project
+  internal class Project
   {
     //-------------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ namespace BuildSpyNark
 
     //-------------------------------------------------------------------------
 
-    // Returns specified project if it exists, otherwise creates it.
+    // Returns specified project if it exists, otherwise creates it first.
 
     public static Project GetProject( string name )
     {
@@ -26,6 +26,15 @@ namespace BuildSpyNark
       Projects.Add( name, project );
 
       return project;
+    }
+
+    //-------------------------------------------------------------------------
+
+    // Clears the static project collection.
+
+    public static void Reset()
+    {
+      Projects.Clear();
     }
 
     //=========================================================================
@@ -45,16 +54,28 @@ namespace BuildSpyNark
 
     //-------------------------------------------------------------------------
 
-    public void AddStats( BuildStats stats )
+    public void AddBuild(
+      DateTime start,
+      DateTime? end,
+      string[] tags )
     {
+      BuildStats stats = new BuildStats( start, end );
+
+      foreach( string t in tags )
+      {
+        BuildTag tag = BuildTag.GetTag( t );
+
+        stats.AddTag( tag );
+      }
+
       Stats.AddStats( stats );
     }
 
     //-------------------------------------------------------------------------
 
-    public ReadOnlyCollection< BuildStats > GetStats()
+    public IBuildStatsProvider GetStats()
     {
-      return Stats.GetStats();
+      return Stats;
     }
 
     //-------------------------------------------------------------------------

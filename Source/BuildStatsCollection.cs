@@ -3,11 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace BuildSpyNark
 {
-  class BuildStatsCollection
+  class BuildStatsCollection : IBuildStatsProvider
   {
     //-------------------------------------------------------------------------
 
@@ -15,13 +14,13 @@ namespace BuildSpyNark
     private List< BuildStats > Stats { get; set; } = new List< BuildStats >();
 
     // Number of builds.
-    public uint TotalBuildsCount { get; private set; }
+    private uint TotalBuildsCount { get; set; }
 
     // Number of completed builds.
-    public uint CompletedBuildsCount { get; private set; }
+    private uint CompletedBuildsCount { get; set; }
 
     // Total build time for all builds.
-    public TimeSpan TotalBuildTime { get; private set; }
+    private TimeSpan TotalBuildTime { get; set; }
 
     //-------------------------------------------------------------------------
 
@@ -54,9 +53,30 @@ namespace BuildSpyNark
 
     //-------------------------------------------------------------------------
 
-    public ReadOnlyCollection< BuildStats > GetStats()
+    public override IReadOnlyCollection< BuildStats > GetBuildStats()
     {
       return Stats.AsReadOnly();
+    }
+
+    //-------------------------------------------------------------------------
+
+    public override uint GetTotalBuildsCount()
+    {
+      return TotalBuildsCount;
+    }
+
+    //-------------------------------------------------------------------------
+
+    public override uint GetCompletedBuildsCount()
+    {
+      return CompletedBuildsCount;
+    }
+
+    //-------------------------------------------------------------------------
+
+    public override TimeSpan GetTotalBuildTime()
+    {
+      return TotalBuildTime;
     }
 
     //-------------------------------------------------------------------------
