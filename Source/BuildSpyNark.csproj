@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildLogFile.cs" />
     <Compile Include="BuildStats.cs" />
     <Compile Include="BuildStatsCollection.cs" />
     <Compile Include="BuildTag.cs" />
