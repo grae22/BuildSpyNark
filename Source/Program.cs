@@ -69,6 +69,33 @@ namespace BuildSpyNark
       {
         entries.Sort();
       }
+
+      // Create stats.
+      foreach( string projectName in LogEntriesByProject.Keys )
+      {
+        Project project = Project.GetProject( projectName );
+
+        List< BuildLogFile.LogEntry > entries = LogEntriesByProject[ projectName ];
+
+        for( int i = 0; i < entries.Count - 1; i++ )
+        {
+          if( entries[ i ].EntryType == BuildLogFile.LogEntry.LogEntryType.BUILD_STARTED &&
+              entries[ i + 1].EntryType == BuildLogFile.LogEntry.LogEntryType.BUILD_ENDED )
+          {
+            project.AddBuild(
+              entries[ i ].Timestamp,
+              entries[ i + 1 ].Timestamp,
+              entries[ i ].Tags.ToArray() );
+          }
+          else if( entries[ i ].EntryType == BuildLogFile.LogEntry.LogEntryType.BUILD_STARTED )
+          {
+            project.AddBuild(
+              entries[ i ].Timestamp,
+              null,
+              entries[ i ].Tags.ToArray() );
+          }
+        }
+      }
     }
 
     //-------------------------------------------------------------------------

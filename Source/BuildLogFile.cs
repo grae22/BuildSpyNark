@@ -16,6 +16,7 @@ namespace BuildSpyNark
         BUILD_ENDED
       }
 
+      public List<string> Tags { get; set; }
       public DateTime Timestamp { get; set; }
       public LogEntryType EntryType { get; set; }
 
@@ -72,6 +73,8 @@ namespace BuildSpyNark
 
         try
         {
+          entry.Tags = Tags;
+
           entry.Timestamp =
             new DateTime(
               int.Parse( fields[ 0 ].Substring( 0, 4 ) ),    // yyyy
