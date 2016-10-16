@@ -48,7 +48,17 @@ namespace BuildSpyNark
 
     //-------------------------------------------------------------------------
 
-    public BuildTag( string text )
+    // Instantiate with BuildTag.GetTag().
+
+    private BuildTag()
+    {
+    }
+
+    //-------------------------------------------------------------------------
+
+    // Instantiate with BuildTag.GetTag().
+
+    private BuildTag( string text )
     {
       Text = text;
     }

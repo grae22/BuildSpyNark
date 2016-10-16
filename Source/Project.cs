@@ -51,7 +51,17 @@ namespace BuildSpyNark
 
     //-------------------------------------------------------------------------
 
-    public Project( string name )
+    // Instantiate with Project.GetProject().
+
+    private Project()
+    {
+    }
+
+    //-------------------------------------------------------------------------
+
+    // Instantiate with Project.GetProject().
+
+    private Project( string name )
     {
       Name = name;
     }
