@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -23,6 +23,13 @@ namespace BuildSpyNark_Test
       absLogFilename = absLogFilename.Replace( @"file:\", "" );
 
       BuildLogFile testOb = new BuildLogFile( absLogFilename );
+      IReadOnlyCollection< BuildLogFile.LogEntry > logEntries = testOb.GetEntries();
+
+      Assert.AreEqual(
+        BuildLogFile.LogEntry.LogEntryType.BUILD_STARTED,
+        logEntries.GetEnumerator().Current.EntryType );
+
+      Assert.AreEqual( 8, logEntries.Count );
     }
 
     //-------------------------------------------------------------------------
