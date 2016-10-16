@@ -19,6 +19,9 @@ namespace BuildSpyNark
     // Returns the total build time for all builds.
     public abstract TimeSpan GetTotalBuildTime();
 
+    // Returns the average build time.
+    public abstract TimeSpan GetAverageBuildTime();
+
     //-------------------------------------------------------------------------
   }
 }

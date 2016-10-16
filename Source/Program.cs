@@ -96,6 +96,22 @@ namespace BuildSpyNark
           }
         }
       }
+
+      // Summary.
+      foreach( Project prj in Project.GetProjects() )
+      {
+        IBuildStatsProvider stats = prj.GetStats();
+
+        Console.WriteLine(
+          "{0}: {1}/{2} completed. Total time: {3} mins, Avg time (s): {4}.",
+          prj.Name,
+          stats.GetCompletedBuildsCount(),
+          stats.GetTotalBuildsCount(),
+          stats.GetTotalBuildTime().Minutes,
+          stats.GetAverageBuildTime().TotalSeconds );
+      }
+
+      Console.ReadKey();
     }
 
     //-------------------------------------------------------------------------

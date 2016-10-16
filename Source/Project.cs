@@ -30,6 +30,13 @@ namespace BuildSpyNark
 
     //-------------------------------------------------------------------------
 
+    public static IReadOnlyCollection<Project> GetProjects()
+    {
+      return Projects.Values;
+    }
+
+    //-------------------------------------------------------------------------
+
     // Clears the static project collection.
 
     public static void Reset()
