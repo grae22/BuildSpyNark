@@ -48,5 +48,22 @@ namespace BuildSpyNark_Test
     }
 
     //-------------------------------------------------------------------------
+
+    [TestMethod]
+    public void AddIncompleteBuild()
+    {
+      DateTime start = new DateTime( 0 );
+      DateTime? end = null;
+      string[] tags = { "TestTag" };
+
+      TestObject.AddBuild( start, end, tags );
+
+      Assert.AreEqual< uint >( 1, TestObject.GetStats().GetTotalBuildsCount() );
+      Assert.AreEqual< uint >( 0, TestObject.GetStats().GetCompletedBuildsCount() );
+      Assert.AreEqual( new TimeSpan(), TestObject.GetStats().GetTotalBuildTime() );
+      Assert.AreEqual( 1, TestObject.GetStats().GetBuildStats().Count );
+    }
+
+    //-------------------------------------------------------------------------
   }
 }
