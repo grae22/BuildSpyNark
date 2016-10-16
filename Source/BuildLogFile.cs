@@ -8,7 +8,7 @@ namespace BuildSpyNark
   {
     //-------------------------------------------------------------------------
 
-    public struct LogEntry
+    public struct LogEntry : IComparable
     {
       public enum LogEntryType
       {
@@ -18,6 +18,29 @@ namespace BuildSpyNark
 
       public DateTime Timestamp { get; set; }
       public LogEntryType EntryType { get; set; }
+
+      public int CompareTo( object obj )
+      {
+        if( obj is LogEntry == false )
+        {
+          throw new Exception( "Comparison cannot be applied to type." );
+        }
+
+        LogEntry compareToOb = (LogEntry)obj;
+
+        if( compareToOb.Timestamp < Timestamp )
+        {
+          return 1;
+        }
+        else if( compareToOb.Timestamp > Timestamp )
+        {
+          return -1;
+        }
+        else
+        {
+          return 0;
+        }
+      }
     }
 
     private const char c_tagSeparator = '#';
@@ -74,6 +97,13 @@ namespace BuildSpyNark
 
         Entries.Add( entry );
       }
+    }
+
+    //-------------------------------------------------------------------------
+
+    public string[] GetTags()
+    {
+      return Tags.ToArray();
     }
 
     //-------------------------------------------------------------------------
