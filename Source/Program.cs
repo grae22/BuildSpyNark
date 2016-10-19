@@ -45,7 +45,7 @@ namespace BuildSpyNark
           IReadOnlyCollection<BuildLogFile.LogEntry> entries = log.GetEntries();
 
           // Extract the project name.
-          string projectName = tags[ 3 ];
+          string projectName = tags[ 1 ];
 
           // Add log entries to collection.
           foreach( BuildLogFile.LogEntry entry in entries )
@@ -98,20 +98,64 @@ namespace BuildSpyNark
       }
 
       // Summary.
-      foreach( Project prj in Project.GetProjects() )
+      foreach( BuildTag tag in BuildTag.GetTags() )
       {
-        IBuildStatsProvider stats = prj.GetStats();
-
-        Console.WriteLine(
-          "{0}: {1}/{2} completed. Total time: {3} mins, Avg time (s): {4}.",
-          prj.Name,
-          stats.GetCompletedBuildsCount(),
-          stats.GetTotalBuildsCount(),
-          stats.GetTotalBuildTime().Minutes,
-          stats.GetAverageBuildTime().TotalSeconds );
+        OutputStats( tag );
       }
 
       Console.ReadKey();
+    }
+
+    //-------------------------------------------------------------------------
+
+    private static void OutputStats( BuildTag tag )
+    {
+      Console.WriteLine( "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" );
+      Console.WriteLine();
+
+      if( tag != null )
+      {
+        Console.WriteLine(
+          "Tag: {0}" + Environment.NewLine,
+          tag.Text );
+      }
+
+      Console.WriteLine(
+        "{0,-20} | {1,-9} | {2,-5} | {3,-5} | {4,-5} | {5,-5} | {6,-5} | {7,-5} |",
+        "Project",
+        "Completed",
+        "Tot h",
+        "Tot m",
+        "Avg m",
+        "Avg s",
+        "Max m",
+        "Max s" );
+
+      Console.WriteLine( "----------------------------------------------------------------------------------" );
+
+      foreach( Project prj in Project.GetProjects() )
+      {
+        IBuildStatsProvider stats = prj.GetStats( tag?.Text );
+
+        if( stats == null )
+        {
+          continue;
+        }
+
+        Console.WriteLine(
+          "{0,-20} | {1,4}/{2,-4} | {3,5} | {4,5} | {5,5} | {6,5} | {7,5} | {8,5} |",
+          prj.Name,
+          stats.GetCompletedBuildsCount(),
+          stats.GetTotalBuildsCount(),
+          (int)stats.GetTotalBuildTime().TotalHours,
+          (int)stats.GetTotalBuildTime().TotalMinutes,
+          (int)stats.GetAverageBuildTime().TotalMinutes,
+          (int)stats.GetAverageBuildTime().TotalSeconds,
+          (int)stats.GetMaxBuildTime().TotalMinutes,
+          (int)stats.GetMaxBuildTime().TotalSeconds );
+      }
+
+      Console.WriteLine( Environment.NewLine );
     }
 
     //-------------------------------------------------------------------------

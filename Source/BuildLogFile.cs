@@ -29,18 +29,43 @@ namespace BuildSpyNark
 
         LogEntry compareToOb = (LogEntry)obj;
 
-        if( compareToOb.Timestamp < Timestamp )
+        return ToString().CompareTo( compareToOb.ToString() );
+
+        //if( compareToOb.Timestamp < Timestamp )
+        //{
+        //  return 1;
+        //}
+        //else if( compareToOb.Timestamp > Timestamp )
+        //{
+        //  return -1;
+        //}
+        //else
+        //{
+        //  return 0;
+        //}
+      }
+
+      public override string ToString()
+      {
+        string s = "";
+
+        foreach( string tag in Tags )
         {
-          return 1;
+          s += tag;
         }
-        else if( compareToOb.Timestamp > Timestamp )
+
+        s += Timestamp.ToString( "yyMMddhhmmss" );
+
+        if( EntryType == LogEntryType.BUILD_STARTED )
         {
-          return -1;
+          s += 'A';
         }
         else
         {
-          return 0;
+          s += 'Z';
         }
+
+        return s;
       }
     }
 
@@ -61,6 +86,8 @@ namespace BuildSpyNark
       // Extract tags from the filename.
       string filenameOnly = Path.GetFileNameWithoutExtension( absFilename );
       Tags = new List<string>( filenameOnly.Split( c_tagSeparator ) );
+
+      Tags.RemoveAt( 0 );
 
       // Parse content.
       string[] lines = File.ReadAllLines( absFilename );

@@ -18,11 +18,15 @@ namespace BuildSpyNark
       string text,
       bool createTagIfNotFound = true )
     {
-      if( Tags.ContainsKey( text ) )
+      foreach( string tagText in Tags.Keys )
       {
-        return Tags[ text ];
+        if( text.ToLower() == tagText.ToLower() )
+        {
+          return Tags[ tagText ];
+        }
       }
-      else if( createTagIfNotFound == false )
+
+      if( createTagIfNotFound == false )
       {
         return null;
       }
@@ -31,6 +35,13 @@ namespace BuildSpyNark
       Tags.Add( text, tag );
 
       return tag;
+    }
+
+    //-------------------------------------------------------------------------
+
+    public static IReadOnlyCollection<BuildTag> GetTags()
+    {
+      return Tags.Values;
     }
 
     //-------------------------------------------------------------------------

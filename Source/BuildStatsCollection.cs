@@ -25,6 +25,9 @@ namespace BuildSpyNark
     // Avg build time.
     private TimeSpan AverageBuildTime { get; set; }
 
+    // Max build time.
+    private TimeSpan MaxBuildTime { get; set; }
+
     //-------------------------------------------------------------------------
 
     public void AddStats( BuildStats stats )
@@ -55,6 +58,14 @@ namespace BuildSpyNark
         // Average build time.
         AverageBuildTime =
           new TimeSpan( 0, 0, (int)( TotalBuildTime.TotalSeconds / TotalBuildsCount ) );
+
+        // Max build time.
+        if( buildTime != null &&
+            ( MaxBuildTime == null ||
+              buildTime > MaxBuildTime ) )
+        {
+          MaxBuildTime = (TimeSpan)buildTime;
+        }
       }
     }
 
@@ -91,6 +102,13 @@ namespace BuildSpyNark
     public override TimeSpan GetAverageBuildTime()
     {
       return AverageBuildTime;
+    }
+
+    //-------------------------------------------------------------------------
+
+    public override TimeSpan GetMaxBuildTime()
+    {
+      return MaxBuildTime;
     }
 
     //-------------------------------------------------------------------------
