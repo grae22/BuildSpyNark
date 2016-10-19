@@ -57,7 +57,7 @@ namespace BuildSpyNark
 
         // Average build time.
         AverageBuildTime =
-          new TimeSpan( 0, 0, (int)( TotalBuildTime.TotalSeconds / TotalBuildsCount ) );
+          new TimeSpan( 0, 0, (int)( TotalBuildTime.TotalSeconds / CompletedBuildsCount ) );
 
         // Max build time.
         if( buildTime != null &&
