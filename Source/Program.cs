@@ -90,14 +90,8 @@ namespace BuildSpyNark
           if( entries[ i ].EntryType == BuildLogFile.LogEntry.LogEntryType.BUILD_STARTED &&
               entries[ i + 1].EntryType == BuildLogFile.LogEntry.LogEntryType.BUILD_ENDED )
           {
-            if( significantBuildsOnly == false )
-            {
-              project.AddBuild(
-                entries[ i ].Timestamp,
-                entries[ i + 1 ].Timestamp,
-                entries[ i ].Tags.ToArray() );
-            }
-            else if( ( entries[ i + 1 ].Timestamp - entries[ i ].Timestamp ).TotalSeconds > 5 )
+            if( significantBuildsOnly == false ||
+                ( entries[ i + 1 ].Timestamp - entries[ i ].Timestamp ).TotalSeconds > 5 )
             {
               project.AddBuild(
                 entries[ i ].Timestamp,
@@ -124,6 +118,7 @@ namespace BuildSpyNark
         OutputStats( tag );
       }
 
+      Console.WriteLine( "Done." );
       Console.ReadKey();
     }
 
@@ -170,18 +165,18 @@ namespace BuildSpyNark
         Console.WriteLine(
           "{0,-20} | {1,4}/{2,-4} | {3,5} | {4,5} | {5,5} | {6,5} | {7,5} | {8,5} |",
           prj.Name,
-          stats.GetCompletedBuildsCount(),
-          stats.GetTotalBuildsCount(),
-          (int)stats.GetTotalBuildTime().TotalHours,
-          (int)stats.GetTotalBuildTime().TotalMinutes,
-          (int)stats.GetAverageBuildTime().TotalMinutes,
-          (int)stats.GetAverageBuildTime().TotalSeconds,
-          (int)stats.GetMaxBuildTime().TotalMinutes,
-          (int)stats.GetMaxBuildTime().TotalSeconds );
+          stats.CompletedBuildsCount,
+          stats.TotalBuildsCount,
+          (int)stats.TotalBuildTime.TotalHours,
+          (int)stats.TotalBuildTime.TotalMinutes,
+          (int)stats.AverageBuildTime.TotalMinutes,
+          (int)stats.AverageBuildTime.TotalSeconds,
+          (int)stats.MaxBuildTime.TotalMinutes,
+          (int)stats.MaxBuildTime.TotalSeconds );
 
-        totTotalBuildTime += stats.GetTotalBuildTime().TotalMinutes;
-        totAvgBuildTime += stats.GetAverageBuildTime().TotalMinutes;
-        totMaxBuildTime += stats.GetMaxBuildTime().TotalMinutes;
+        totTotalBuildTime += stats.TotalBuildTime.TotalMinutes;
+        totAvgBuildTime += stats.AverageBuildTime.TotalMinutes;
+        totMaxBuildTime += stats.MaxBuildTime.TotalMinutes;
       }
 
       Console.WriteLine( "----------------------------------------------------------------------------------" );
@@ -197,7 +192,6 @@ namespace BuildSpyNark
         "",
         (int)totMaxBuildTime,
         "" );
-
 
       Console.WriteLine( Environment.NewLine );
     }

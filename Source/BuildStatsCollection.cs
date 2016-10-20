@@ -13,20 +13,28 @@ namespace BuildSpyNark
     // Collection of build stats.
     private List<BuildStats> Stats { get; set; } = new List<BuildStats>();
 
+    public override IReadOnlyCollection<BuildStats> BuildStats
+    {
+      get
+      {
+        return Stats.AsReadOnly();
+      }
+    }
+
     // Number of builds.
-    private uint TotalBuildsCount { get; set; }
+    override public uint TotalBuildsCount { get; protected set; }
 
     // Number of completed builds.
-    private uint CompletedBuildsCount { get; set; }
+    override public uint CompletedBuildsCount { get; protected set; }
 
     // Total build time for all builds.
-    private TimeSpan TotalBuildTime { get; set; }
+    override public TimeSpan TotalBuildTime { get; protected set; }
 
     // Avg build time.
-    private TimeSpan AverageBuildTime { get; set; }
+    override public TimeSpan AverageBuildTime { get; protected set; }
 
     // Max build time.
-    private TimeSpan MaxBuildTime { get; set; }
+    override public TimeSpan MaxBuildTime { get; protected set; }
 
     //-------------------------------------------------------------------------
 
@@ -67,48 +75,6 @@ namespace BuildSpyNark
           MaxBuildTime = (TimeSpan)buildTime;
         }
       }
-    }
-
-    //-------------------------------------------------------------------------
-
-    public override IReadOnlyCollection<BuildStats> GetBuildStats()
-    {
-      return Stats.AsReadOnly();
-    }
-
-    //-------------------------------------------------------------------------
-
-    public override uint GetTotalBuildsCount()
-    {
-      return TotalBuildsCount;
-    }
-
-    //-------------------------------------------------------------------------
-
-    public override uint GetCompletedBuildsCount()
-    {
-      return CompletedBuildsCount;
-    }
-
-    //-------------------------------------------------------------------------
-
-    public override TimeSpan GetTotalBuildTime()
-    {
-      return TotalBuildTime;
-    }
-
-    //-------------------------------------------------------------------------
-
-    public override TimeSpan GetAverageBuildTime()
-    {
-      return AverageBuildTime;
-    }
-
-    //-------------------------------------------------------------------------
-
-    public override TimeSpan GetMaxBuildTime()
-    {
-      return MaxBuildTime;
     }
 
     //-------------------------------------------------------------------------

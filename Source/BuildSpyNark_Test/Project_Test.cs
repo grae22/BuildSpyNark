@@ -41,10 +41,10 @@ namespace BuildSpyNark_Test
 
       TestObject.AddBuild( start, end, tags );
 
-      Assert.AreEqual<uint>( 1, TestObject.GetStats().GetTotalBuildsCount() );
-      Assert.AreEqual<uint>( 1, TestObject.GetStats().GetCompletedBuildsCount() );
-      Assert.AreEqual( end - start, TestObject.GetStats().GetTotalBuildTime() );
-      Assert.AreEqual( 1, TestObject.GetStats().GetBuildStats().Count );
+      Assert.AreEqual<uint>( 1, TestObject.GetStats().TotalBuildsCount );
+      Assert.AreEqual<uint>( 1, TestObject.GetStats().CompletedBuildsCount );
+      Assert.AreEqual( end - start, TestObject.GetStats().TotalBuildTime );
+      Assert.AreEqual( 1, TestObject.GetStats().BuildStats.Count );
     }
 
     //-------------------------------------------------------------------------
@@ -58,10 +58,10 @@ namespace BuildSpyNark_Test
 
       TestObject.AddBuild( start, end, tags );
 
-      Assert.AreEqual<uint>( 1, TestObject.GetStats().GetTotalBuildsCount() );
-      Assert.AreEqual<uint>( 0, TestObject.GetStats().GetCompletedBuildsCount() );
-      Assert.AreEqual( new TimeSpan(), TestObject.GetStats().GetTotalBuildTime() );
-      Assert.AreEqual( 1, TestObject.GetStats().GetBuildStats().Count );
+      Assert.AreEqual<uint>( 1, TestObject.GetStats().TotalBuildsCount );
+      Assert.AreEqual<uint>( 0, TestObject.GetStats().CompletedBuildsCount );
+      Assert.AreEqual( new TimeSpan(), TestObject.GetStats().TotalBuildTime );
+      Assert.AreEqual( 1, TestObject.GetStats().BuildStats.Count );
     }
 
     //-------------------------------------------------------------------------
