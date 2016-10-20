@@ -27,6 +27,14 @@ namespace BuildSpyNark
         return;
       }
 
+      // Significant builds only? Excludeds builds shorter than a certain time.
+      bool significantBuildsOnly = false;
+
+      if( args.Length > 1 )
+      {
+        significantBuildsOnly = ( args[ 1 ].ToLower() == "-s" );
+      }
+
       // Get list of log files.
       string[] files =
         Directory.GetFiles(
@@ -82,17 +90,30 @@ namespace BuildSpyNark
           if( entries[ i ].EntryType == BuildLogFile.LogEntry.LogEntryType.BUILD_STARTED &&
               entries[ i + 1].EntryType == BuildLogFile.LogEntry.LogEntryType.BUILD_ENDED )
           {
-            project.AddBuild(
-              entries[ i ].Timestamp,
-              entries[ i + 1 ].Timestamp,
-              entries[ i ].Tags.ToArray() );
+            if( significantBuildsOnly == false )
+            {
+              project.AddBuild(
+                entries[ i ].Timestamp,
+                entries[ i + 1 ].Timestamp,
+                entries[ i ].Tags.ToArray() );
+            }
+            else if( ( entries[ i + 1 ].Timestamp - entries[ i ].Timestamp ).TotalSeconds > 2 )
+            {
+              project.AddBuild(
+                entries[ i ].Timestamp,
+                entries[ i + 1 ].Timestamp,
+                entries[ i ].Tags.ToArray() );
+            }
           }
           else if( entries[ i ].EntryType == BuildLogFile.LogEntry.LogEntryType.BUILD_STARTED )
           {
-            project.AddBuild(
-              entries[ i ].Timestamp,
-              null,
-              entries[ i ].Tags.ToArray() );
+            if( significantBuildsOnly == false )
+            {
+              project.AddBuild(
+                entries[ i ].Timestamp,
+                null,
+                entries[ i ].Tags.ToArray() );
+            }
           }
         }
       }
