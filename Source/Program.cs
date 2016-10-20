@@ -97,7 +97,7 @@ namespace BuildSpyNark
                 entries[ i + 1 ].Timestamp,
                 entries[ i ].Tags.ToArray() );
             }
-            else if( ( entries[ i + 1 ].Timestamp - entries[ i ].Timestamp ).TotalSeconds > 2 )
+            else if( ( entries[ i + 1 ].Timestamp - entries[ i ].Timestamp ).TotalSeconds > 5 )
             {
               project.AddBuild(
                 entries[ i ].Timestamp,
@@ -154,6 +154,10 @@ namespace BuildSpyNark
 
       Console.WriteLine( "----------------------------------------------------------------------------------" );
 
+      double totTotalBuildTime = 0.0;
+      double totAvgBuildTime = 0.0;
+      double totMaxBuildTime = 0.0;
+
       foreach( Project prj in Project.GetProjects() )
       {
         IBuildStatsProvider stats = prj.GetStats( tag?.Text );
@@ -174,7 +178,26 @@ namespace BuildSpyNark
           (int)stats.GetAverageBuildTime().TotalSeconds,
           (int)stats.GetMaxBuildTime().TotalMinutes,
           (int)stats.GetMaxBuildTime().TotalSeconds );
+
+        totTotalBuildTime += stats.GetTotalBuildTime().TotalMinutes;
+        totAvgBuildTime += stats.GetAverageBuildTime().TotalMinutes;
+        totMaxBuildTime += stats.GetMaxBuildTime().TotalMinutes;
       }
+
+      Console.WriteLine( "----------------------------------------------------------------------------------" );
+
+      Console.WriteLine(
+        "{0,-20} | {1,4} {2,-4} | {3,5} | {4,5} | {5,5} | {6,5} | {7,5} | {8,5} |",
+        "",
+        "",
+        "",
+        "",
+        (int)totTotalBuildTime,
+        (int)totAvgBuildTime,
+        "",
+        (int)totMaxBuildTime,
+        "" );
+
 
       Console.WriteLine( Environment.NewLine );
     }
