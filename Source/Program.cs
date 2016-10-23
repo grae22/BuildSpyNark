@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using BuildSpyNark.Db;
 
 namespace BuildSpyNark
 {
@@ -11,9 +12,18 @@ namespace BuildSpyNark
     private static Dictionary<string, List<BuildLogFile.LogEntry>> LogEntriesByProject =
       new Dictionary<string, List<BuildLogFile.LogEntry>>();
 
+    public List<IBuildStatsProvider> Stats { get; private set; } = new List<IBuildStatsProvider>();
+
     //-------------------------------------------------------------------------
 
     static void Main( string[] args )
+    {
+      new Program( args );
+    }
+
+    //-------------------------------------------------------------------------
+
+    public Program( string[] args )
     {
       // No args?
       if( args.Length == 0 )
@@ -33,6 +43,49 @@ namespace BuildSpyNark
       if( args.Length > 1 )
       {
         significantBuildsOnly = ( args[ 1 ].ToLower() == "-s" );
+      }
+
+      // Command line args for sql connection?
+      string sqlServerName = null;
+      string sqlDbName = null;
+      string sqlUsername = null;
+      string sqlPassword = null;
+
+      foreach( string a in args )
+      {
+        if( a.StartsWith( "-server=" ) )
+        {
+          sqlServerName = a.Remove( 0, "-server=".Length );
+        }
+        else if( a.StartsWith( "-dbname=" ) )
+        {
+          sqlDbName = a.Remove( 0, "-dbname=".Length );
+        }
+        else if( a.StartsWith( "-user=" ) )
+        {
+          sqlUsername = a.Remove( 0, "-user=".Length );
+        }
+        else if( a.StartsWith( "-password=" ) )
+        {
+          sqlPassword = a.Remove( 0, "-password=".Length );
+        }
+      }
+
+      DbConnection dbConnection = null;
+
+      if( sqlServerName != null &&
+          sqlDbName != null &&
+          sqlUsername != null &&
+          sqlPassword != null )
+      {
+        dbConnection =
+          new DbConnection(
+            sqlServerName,
+            sqlDbName,
+            sqlUsername,
+            sqlPassword );
+
+        //dbConnection.Connection.CreateCommand()
       }
 
       // Get list of log files.
@@ -112,6 +165,13 @@ namespace BuildSpyNark
         }
       }
 
+      foreach( Project prj in Project.GetProjects() )
+      {
+        IBuildStatsProvider stats = prj.GetStats( "All" );
+
+        Stats.Add( stats );
+      }
+
       // Summary.
       foreach( BuildTag tag in BuildTag.GetTags() )
       {
@@ -119,7 +179,7 @@ namespace BuildSpyNark
       }
 
       Console.WriteLine( "Done." );
-      Console.ReadKey();
+      //Console.ReadKey();
     }
 
     //-------------------------------------------------------------------------
