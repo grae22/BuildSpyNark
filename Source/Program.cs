@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data.Common;
 using BuildSpyNark.Db;
 
 namespace BuildSpyNark
@@ -18,7 +20,14 @@ namespace BuildSpyNark
 
     static void Main( string[] args )
     {
-      new Program( args );
+      try
+      {
+        new Program( args );
+      }
+      catch( Exception ex )
+      {
+        Console.WriteLine( "ERROR: " + ex.Message );
+      }
     }
 
     //-------------------------------------------------------------------------
@@ -71,7 +80,7 @@ namespace BuildSpyNark
         }
       }
 
-      DbConnection dbConnection = null;
+      Db.DbConnection dbConnection = null;
 
       if( sqlServerName != null &&
           sqlDbName != null &&
@@ -79,13 +88,11 @@ namespace BuildSpyNark
           sqlPassword != null )
       {
         dbConnection =
-          new DbConnection(
+          new Db.DbConnection(
             sqlServerName,
             sqlDbName,
             sqlUsername,
             sqlPassword );
-
-        //dbConnection.Connection.CreateCommand()
       }
 
       // Get list of log files.
@@ -95,6 +102,25 @@ namespace BuildSpyNark
           "*.buildspy-prj-log",
           SearchOption.TopDirectoryOnly );
 
+      if( dbConnection == null )
+      {
+        ProcessFilesAndOutputSummary( files, significantBuildsOnly );
+      }
+      else
+      {
+        ProcessFilesAndImportIntoDb( files, dbConnection );
+      }
+
+      Console.WriteLine( "Done." );
+      //Console.ReadKey();
+    }
+
+    //-------------------------------------------------------------------------
+
+    private void ProcessFilesAndOutputSummary(
+      string[] files,
+      bool significantBuildsOnly )
+    {
       foreach( string f in files )
       {
         try
@@ -177,9 +203,6 @@ namespace BuildSpyNark
       {
         OutputStats( tag );
       }
-
-      Console.WriteLine( "Done." );
-      //Console.ReadKey();
     }
 
     //-------------------------------------------------------------------------
@@ -254,6 +277,53 @@ namespace BuildSpyNark
         "" );
 
       Console.WriteLine( Environment.NewLine );
+    }
+
+    //-------------------------------------------------------------------------
+
+    void ProcessFilesAndImportIntoDb(
+      string[] files,
+      Db.DbConnection dbConnection )
+    {
+      SqlCommand sqlCmd = dbConnection.CreateCommand();
+      sqlCmd.Parameters.Add( "@filename", System.Data.SqlDbType.NVarChar );
+      sqlCmd.Parameters.Add( "@eventType", System.Data.SqlDbType.NVarChar );
+      sqlCmd.Parameters.Add( "@timestamp", System.Data.SqlDbType.SmallDateTime );
+      sqlCmd.CommandText = "INSERT INTO ImportData VALUES ( @filename, @eventType, @timestamp )";
+
+      foreach( string f in files )
+      {
+        try
+        {
+          sqlCmd.Parameters[ "@filename" ].Value =
+            Path.GetFileNameWithoutExtension( f );
+
+          // Parse the log file.
+          BuildLogFile log = new BuildLogFile( f );
+
+          string[] tags = log.GetTags();
+          IReadOnlyCollection<BuildLogFile.LogEntry> entries = log.GetEntries();
+
+          // Extract the project name.
+          string projectName = tags[ 1 ];
+
+          // Add log entries to collection.
+          foreach( BuildLogFile.LogEntry entry in entries )
+          {
+            sqlCmd.Parameters[ "@eventType" ].Value =
+              ( entry.EntryType == BuildLogFile.LogEntry.LogEntryType.BUILD_STARTED ?
+                "build.start" : "build.end" );
+
+            sqlCmd.Parameters[ "@timestamp" ].Value = entry.Timestamp;
+
+            sqlCmd.ExecuteScalar();
+          }
+        }
+        catch( Exception ex )
+        {
+          // TODO
+        }
+      }
     }
 
     //-------------------------------------------------------------------------

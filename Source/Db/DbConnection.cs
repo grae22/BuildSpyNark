@@ -60,7 +60,7 @@ namespace BuildSpyNark.Db
         catch {}
 
         throw new Exception(
-          "Critr database connection error." +
+          "Database connection error." +
           Environment.NewLine +
           Environment.NewLine +
           ex.Message );
