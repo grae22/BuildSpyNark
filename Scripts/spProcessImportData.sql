@@ -21,7 +21,7 @@ BEGIN
 	DECLARE importDataCursor CURSOR LOCAL
     FORWARD_ONLY
 	  FOR SELECT * FROM ImportData
-    ORDER BY Filename
+    ORDER BY Filename, EventTimestamp
 
 	OPEN importDataCursor
 
@@ -31,6 +31,7 @@ BEGIN
   DECLARE @buildStartFilename nvarchar( 1000 )
   DECLARE @buildStartId int
   DECLARE @buildEndId int
+  DECLARE @buildStartTimestamp smalldatetime
 
   SET @buildStartId = -1
   SET @buildEndId = -1
@@ -114,6 +115,7 @@ BEGIN
       BEGIN
         SET @buildStartId = SCOPE_IDENTITY()
         SET @buildStartFilename = @filename
+        SET @buildStartTimestamp = @timestamp
       END
       ELSE
       BEGIN
@@ -121,16 +123,16 @@ BEGIN
         BEGIN
           SET @buildEndId = SCOPE_IDENTITY()
 
-          INSERT INTO ProjectBuilds ( ProjectId, BuildStartEventId, BuildEndEventId )
-          VALUES ( @projectId, @buildStartId, @buildEndId )
+          INSERT INTO ProjectBuilds ( ProjectId, BuildStartEventId, BuildEndEventId, Duration )
+          VALUES ( @projectId, @buildStartId, @buildEndId, DATEDIFF( second, @buildStartTimestamp, @timestamp ) )
 
           SET @buildId = SCOPE_IDENTITY()
         END
         ELSE
         BEGIN
           IF @buildStartId > -1
-            INSERT INTO ProjectBuilds ( ProjectId, BuildStartEventId, BuildEndEventId )
-            VALUES ( @projectId, @buildStartId, null )
+            INSERT INTO ProjectBuilds ( ProjectId, BuildStartEventId, BuildEndEventId, Duration )
+            VALUES ( @projectId, @buildStartId, null, null )
 
           SET @buildStartId = -1
           SET @buildEndId = -1
